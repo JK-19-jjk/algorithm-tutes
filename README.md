@@ -6,11 +6,11 @@ This repository contains my weekly algorithm tutorial implementations using Java
 
 Each week’s tutorial is organized inside:
 
-src/
-  ├── week01/
-  ├── week02/
-  ├── week03/
-  └── ...
+src/ 
+   week01/ 
+   week02/
+   week03/
+   ...
 
 Each folder contains the solutions and code for that week.
 

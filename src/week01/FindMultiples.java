@@ -1,85 +1,86 @@
 package week01;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class FindMultiples {
 
-    // Finds a value that appears twice
-    public static int findDuplicate(int[] values) {
-
-        for (int i = 0; i < values.length; i++) {
-            for (int j = i + 1; j < values.length; j++) {
-
-                if (values[i] == values[j]) {
-                    return values[i];
-                }
-
-            }
-        }
-
-        return -1; // No duplicate found
+    /*
+     *Find an index where a value in the array occurs for the second time
+     * Returns -1 if no such index exists
+     */
+    public static int findDuplicate(ArrayList<Integer> numbers) {
+        for (int i = 0; i < numbers.size(); i++)
+            for (int j = 0; j < i; j++)
+                if (numbers.get(i).equals(numbers.get(j)))
+                    return i;
+        return -1;
     }
 
-    // Finds a value that appears three times
-    public static int findTriplicate(int[] values) {
-
-        for (int i = 0; i < values.length; i++) {
-            for (int j = i + 1; j < values.length; j++) {
-                for (int k = j + 1; k < values.length; k++) {
-
-                    if (values[i] == values[j] && values[i] == values[k]) {
-                        return values[i];
-                    }
-
+    /*
+     * Find an index where a value in the array occurs for the third time
+     * Returns -1 if no such index exists
+     */
+    public static int findTriplicate(ArrayList<Integer> numbers) {
+        for (int i = 0; i < numbers.size(); i++) {
+            int count = 0;
+            for (int j = 0; j < i; j++) {
+                if (numbers.get(i).equals(numbers.get(j))) {
+                    count++;
+                    if (count == 2) return i;
                 }
             }
         }
-
-        return -1; // No triplicate found
+        return -1;
     }
 
-    // Creates an array of given size and fills with random numbers
-    public static int[] randomValues(int size) {
-
-        Random rand = new Random();
-        int[] values = new int[size];
-
-        for (int i = 0; i < size; i++) {
-            values[i] = rand.nextInt(size / 2); 
+    public static ArrayList<Integer> createInput(int size, int repeats, boolean shuffle){
+            ArrayList<Integer> result = new ArrayList<>(size);
+            for (int i = repeats; i < size; i++)
+                result.add(i);
+            for(int i = 0; i < repeats; i++)
+                result.add(0);
+            if (shuffle) 
+                Collections.shuffle(result);
+            return result;
         }
 
-        return values;
-    }
-
-    public static void main(String[] args) {
-
-        int size = 1000;          // Change this to test different sizes
-        boolean triplicates = false; // true = findTriplicate, false = findDuplicate
-        boolean printArray = false;
-
-        int[] values = randomValues(size);
-
-        if (printArray) {
-            for (int v : values) {
-                System.out.print(v + " ");
+        /*
+        * @param args the command line arguments
+        */
+        public static void main(String[] args) {
+            // How many values to generate
+            int numValues = 100000; 
+        // Whether the input should be shuffled
+            boolean shuffle = true;
+            // Whether to look for triplicate values
+            boolean triplicates = false;
+            // Whether to print data. Only use with small numbers of values.
+            boolean printData = false; 
+            
+            // Create some data, either sorted or unsorted
+            ArrayList<Integer> data = createInput(numValues, (triplicates ? 3 : 2), shuffle);
+            // Optionally print the data (to check correctness)
+            if(printData){
+                System.out.print("Input values: ");
+                for(int i=0;i<data.size(); i++)
+                    System.out.print(data.get(i) + " ");
+                System.out.println();
             }
-            System.out.println();
+            
+            // Run one of the find functions; 
+            // Check time before and after to measure runtime 
+            long start = System.currentTimeMillis();
+            // Pick the function based on whether we are looking for triplicates
+            int result = triplicates ? findTriplicate(data) : findDuplicate(data);
+            long now = System.currentTimeMillis();
+            double elapsed = (now - start) / 1000.0;
+            if(result >= 0)
+                System.out.println("Result: " + result + " (value: " + data.get(result) + ")");
+            else
+                System.out.println("Result: nothing found");
+            System.out.println("Elapsed time = " + elapsed + " seconds");        
+
         }
-
-        long startTime = System.nanoTime();
-
-        int result;
-
-        if (triplicates) {
-            result = findTriplicate(values);
-        } else {
-            result = findDuplicate(values);
-        }
-
-        long endTime = System.nanoTime();
-
-        System.out.println("Result: " + result);
-        System.out.println("Array size: " + size);
-        System.out.println("Time taken (nanoseconds): " + (endTime - startTime));
+    
     }
-}
